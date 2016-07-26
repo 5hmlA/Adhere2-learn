@@ -1,0 +1,77 @@
+apply plugin: 'com.android.library'
+//apply from: '../Vendor/dependency.gradle'  apply from 表示引用外部gradle类似import  (../表示外/上一层目录)中文件夹Vendor里面的dependency.gradle
+//apply from: '../config.gradle'
+apply from: "../config.gradle"
+
+def cfg = ext.configuration // 配置
+def libs = ext.thirdLibs // 库
+
+android {
+    compileSdkVersion project.compileSdkVersion as int
+    buildToolsVersion project.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion cfg.minSdk
+        targetSdkVersion cfg.targetSdk
+        versionCode cfg.version_code
+        versionName cfg.version_name
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+//       定义final 的数据    类型         名字                  值
+//        buildConfigField "String", "MARVEL_PUBLIC_KEY", "\"${marvel_public_key}\""
+//        buildConfigField "String", "MARVEL_PRIVATE_KEY", "\"${marvel_private_key}\""
+        buildConfigField "boolean", "YUN", "true"
+
+    }
+    buildTypes {
+        yun{
+            signingConfig signingConfigs.debug
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    androidTestCompile "com.android.support:support-annotations:${project.suportlibraryVersion}"
+    compile "com.android.support:appcompat-v7:${project.suportlibraryVersion}"
+    compile "com.android.support:support-vector-drawable:${project.suportlibraryVersion}"
+    compile "com.android.support:recyclerview-v7:${project.suportlibraryVersion}"
+    compile "com.android.support:design:${project.suportlibraryVersion}"
+//    三方库
+    compile "com.jakewharton:butterknife:${project.butterknife}"
+    compile "com.squareup.picasso:picasso:${project.picasso}"
+    compile "com.android.support:cardview-v7:${project.suportlibraryVersion}"
+    compile "com.android.support:palette-v7:${project.suportlibraryVersion}"
+    compile 'com.android.support.test.espresso:espresso-idling-resource:2.2.2'
+}
+
+//
+//使用aar 依赖
+//方式一：
+//allprojects {
+//    repositories {
+//        jcenter()
+//        flatDir {
+//            dirs 'libs'
+//        }
+//    }
+//}
+//
+//dependencies {
+//    compile(name:'cards', ext:'aar')
+//}
+//
+//方式二
+//新建一个jar/aar Module，选择aar 文件，然后新建的Module 目录下，就会多了个build.gradle 和xxx.aar。
+//configurations.maybeCreate("default")
+//artifacts.add("default", file('mylibrary-debug.aar'))
+//然后在我们的Module 中这样引用即可。
+//compile project(‘:mylibrary-debug’)
+//===============
+
