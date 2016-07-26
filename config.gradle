@@ -1,0 +1,50 @@
+//在需要引用该gradle的地方  apply from: "../config.gradle"
+
+def gen_path(path) {
+    def joinedPath = new File(path).getCanonicalPath();
+    return joinedPath;
+}
+
+def supportLibVersion = "23.3.0"
+
+ext {
+    configuration = [
+            buildToolsVersion: "23.0.1",
+            compileVersion   : 23,
+            minSdk           : 14,
+            targetSdk        : 23,
+            version_code     : 1,
+            version_name     : "0.0.1",
+    ]
+
+    libsVersion = [
+            okhttp3:"2.2.0",
+            picasso:"2.5.2",
+            gson:"2.3.1",
+    ]
+
+    thirdLibs = [
+            //compile files("${ext.thirdLibs.fastjson}")
+            fastjson                  : gen_path("../Vendor/HWThirdJar/fastjson-1.1.32.jar"),
+            //remote dependency
+            okhttp                    : "com.squareup.okhttp:okhttp:${libsVersion.okhttp3}",
+            picasso                   : "com.squareup.picasso:picasso:2.5.2",
+            okhttp3                   : "com.squareup.okhttp3:okhttp:3.2.0",
+            gson                      : "com.google.code.gson:gson:2.3.1",
+            //android support lib
+            support_v4                : "com.android.support:support-v4:${project.suportlibraryVersion}",
+            support_v4                : "com.android.support:support-v4:${supportLibVersion}",
+            recyclerview_v7           : "com.android.support:recyclerview-v7:${supportLibVersion}",
+            appcompat                 : "com.android.support:appcompat-v7:${supportLibVersion}",
+
+            supportVersion    : "23.1.1",
+            retrofit          : "2.0.0-beta2",
+            rxandroid         : "1.1.0",
+            dagger            : "2.0",
+            javax_annotation  : "10.0-b28",
+            butterknife       : "7.0.1",
+            glide             : "3.6.1",
+            recycler_animators: "2.1.0",
+            circleimageview   : "2.0.0"
+    ]
+}
