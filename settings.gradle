@@ -1,1 +1,3 @@
-include ':app'
+include ':app', ':yun-library'
+//include ':hihealthlib'
+//project(':hihealthlib').projectDir = new File('../HiHealth/hihealthlib')
