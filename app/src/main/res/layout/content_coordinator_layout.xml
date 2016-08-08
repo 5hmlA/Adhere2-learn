@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
+    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,6 +11,8 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#ff00"
+    android:clickable="true"
+    android:foreground="?selectableItemBackground"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.jonas.materialdesign_learn.CoordinatorLayoutActivity"
     tools:showIn="@layout/activity_coordinator_layout">
@@ -21,4 +24,29 @@
         android:max="100"
         android:progress="50"
         android:layout_height="6dp"/>
-</RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_marginTop="20dp"
+        android:clickable="true"
+        android:background="#fcfc"
+        android:theme="@style/AppTheme"
+        android:layout_height="wrap_content">
+
+
+    <TextView
+        android:layout_margin="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="测试测试"/>
+
+    </FrameLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="按钮 点击"
+        android:padding="5dp"/>
+
+
+</LinearLayout>
