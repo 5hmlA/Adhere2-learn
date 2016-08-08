@@ -25,7 +25,7 @@ ext {
 
     thirdLibs = [
             //compile files("${ext.thirdLibs.fastjson}")
-            fastjson                  : gen_path("../Vendor/HWThirdJar/fastjson-1.1.32.jar"),
+            fastjson                  : gen_path("../fastjson-1.1.32.jar"),
             //remote dependency
             okhttp                    : "com.squareup.okhttp:okhttp:${libsVersion.okhttp3}",
             picasso                   : "com.squareup.picasso:picasso:2.5.2",

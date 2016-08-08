@@ -46,6 +46,7 @@ public abstract class NotesListFragment extends Fragment {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.notes_list);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(getNumColumns(),
                 StaggeredGridLayoutManager.VERTICAL));
+        recyclerView.setHasFixedSize(true);
         RecyclerView.Adapter adapte = getAdapte(recyclerView);
         recyclerView.setAdapter(adapte);
 
