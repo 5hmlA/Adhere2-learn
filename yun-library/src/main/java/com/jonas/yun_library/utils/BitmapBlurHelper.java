@@ -2,17 +2,20 @@ package com.jonas.yun_library.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+import android.view.View;
 
 /**
  * @author jiangzuyun.
  * @date 2016/7/15
  * @des [一句话描述]
- * @since [产品/模版版本]
+ * @since [more : https://github.com/wasabeef/Blurry]
  */
 public class BitmapBlurHelper {
     //缩放系数
@@ -44,6 +47,10 @@ public class BitmapBlurHelper {
         }else{//快速模糊
             return fastBlur(sentBitmap,radius);
         }
+    }
+    public static Bitmap doBlur(View view, float radius) {
+
+        return null;
     }
 
     /**
@@ -273,5 +280,14 @@ public class BitmapBlurHelper {
         }
         bitmap.setPixels(pix, 0, w, 0, 0, w, h);
         return (bitmap);
+    }
+
+    private static void blur(Context context,Bitmap bkg, View view) {
+        float radius = 20;
+        Bitmap overlay = Bitmap.createBitmap((int)(view.getMeasuredWidth()), (int)(view.getMeasuredHeight()), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overlay);
+        canvas.translate(-view.getLeft(), -view.getTop());
+        canvas.drawBitmap(bkg, 0, 0, null);
+        view.setBackground(new BitmapDrawable(context.getResources(), doBlur(context, overlay, radius)));
     }
 }

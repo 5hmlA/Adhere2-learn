@@ -1,3 +1,2 @@
-include ':app', ':yun-library'
-//include ':hihealthlib'
-//project(':hihealthlib').projectDir = new File('../HiHealth/hihealthlib')
+include ':app', ':customview-learn', ':resource-learn', ':material-learn'
+include ':yun-library'

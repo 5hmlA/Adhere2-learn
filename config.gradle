@@ -1,43 +1,25 @@
-//在需要引用该gradle的地方  apply from: "../config.gradle"
+//在需要引用该gradle的地方  apply from: "../config.gradle"  (../ : 上层文件夹)
 
 def gen_path(path) {
     def joinedPath = new File(path).getCanonicalPath();
     return joinedPath;
 }
 
-def supportLibVersion = "23.3.0"
 
+def supportLibVersion = "23.4.0"
 ext {
-    configuration = [
+
+    config = [
             buildToolsVersion: "23.0.1",
-            compileVersion   : 23,
-            minSdk           : 14,
-            targetSdk        : 23,
-            version_code     : 1,
-            version_name     : "0.0.1",
+            compileSdkVersion: 23,
+            minSdkVersion    : 16,
+            targetSdkVersion : 23,
+            versionCode      : 1,
+            versionName      : "0.0.1",
     ]
 
     libsVersion = [
-            okhttp3:"2.2.0",
-            picasso:"2.5.2",
-            gson:"2.3.1",
-    ]
-
-    thirdLibs = [
-            //compile files("${ext.thirdLibs.fastjson}")
-            fastjson                  : gen_path("../fastjson-1.1.32.jar"),
-            //remote dependency
-            okhttp                    : "com.squareup.okhttp:okhttp:${libsVersion.okhttp3}",
-            picasso                   : "com.squareup.picasso:picasso:2.5.2",
-            okhttp3                   : "com.squareup.okhttp3:okhttp:3.2.0",
-            gson                      : "com.google.code.gson:gson:2.3.1",
-            //android support lib
-            support_v4                : "com.android.support:support-v4:${project.suportlibraryVersion}",
-            support_v4                : "com.android.support:support-v4:${supportLibVersion}",
-            recyclerview_v7           : "com.android.support:recyclerview-v7:${supportLibVersion}",
-            appcompat                 : "com.android.support:appcompat-v7:${supportLibVersion}",
-
-            supportVersion    : "23.1.1",
+            supportVersion    : "24.1.1",
             retrofit          : "2.0.0-beta2",
             rxandroid         : "1.1.0",
             dagger            : "2.0",
@@ -45,6 +27,32 @@ ext {
             butterknife       : "7.0.1",
             glide             : "3.6.1",
             recycler_animators: "2.1.0",
-            circleimageview   : "2.0.0"
+            circleimageview   : "2.0.0",
+            gson              : "2.7",
+            picasso           : "2.5.2"
+    ]
+
+    thirdLibs = [
+            //android support lib
+            support_v4    : "com.android.support:support-v4:${supportLibVersion}",
+//            recycv_v7     : "com.android.support:recyclerview-v7:${supportLibVersion}",
+            recycv_v7     : 'jp.wasabeef:recyclerview-animators:2.2.3',
+            appcompat     : "com.android.support:appcompat-v7:${supportLibVersion}",
+            materialdesigh: "com.android.support:design:${supportLibVersion}",
+            vector        : "com.android.support:support-vector-drawable:${supportLibVersion}",
+            cardview      : "com.android.support:cardview-v7:${suportlibraryVersion}",
+            palette       : "com.android.support:palette-v7:${suportlibraryVersion}",
+
+            //github
+            okhttp3       : "com.squareup.okhttp3:okhttp:${libsVersion.okhttp3}",
+            gson          : "com.google.code.gson:gson:${libsVersion.gson}",
+            butterknife   : "com.jakewharton:butterknife:${libsVersion.butterknife}",
+
+            picasso       : "com.squareup.picasso:picasso:${libsVersion.picasso}",
+//            compile 'jp.wasabeef:picasso-transformations:2.1.0'
+//            // If you want to use the GPU Filters
+//            compile 'jp.co.cyberagent.android.gpuimage:gpuimage-library:1.4.1'
     ]
 }
+
+//\bin\plugins\android\lib\templates\gradle-projects\NewAndroidModule\root
