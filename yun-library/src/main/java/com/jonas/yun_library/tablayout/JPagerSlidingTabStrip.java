@@ -8,9 +8,12 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Size;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.AttributeSet;
@@ -58,7 +61,13 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     private ColorStateList mTabTextColorStateList;
 
     public interface IconTabProvider {
-        public int getPageIconResId(int position);
+        /**
+         * @param position
+         * @return 长度：
+         * 1,简单的背景图片
+         * 2，0为checked pressed背景  1为normal背景
+         */
+        public int[] getPageIconResId(int position);
     }
 
     // @formatter:off
@@ -203,7 +212,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
         for (int i = 0; i < tabCount; i++) {
 
             if (pager.getAdapter() instanceof IconTabProvider) {
-                addIconTab(i, ((IconTabProvider) pager.getAdapter()).getPageIconResId(i), pager.getAdapter().getPageTitle(i).toString());
+                addIconTab(i, pager.getAdapter().getPageTitle(i).toString(), ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
             } else {
                 addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
             }
@@ -226,13 +235,17 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     }
 
     private void addTextTab(final int position, String title) {
-        addIconTab(position,0,title);
+        addIconTab(position, title, 0);
     }
 
-    private void addIconTab(final int position, int resId, String title) {
+    private void addIconTab(final int position, String title, @NonNull @Size(min = 1) int... resId) {
         RadioButton tab = new RadioButton(getContext());
         tab.setButtonDrawable(android.R.color.transparent);
-        tab.setBackgroundResource(resId);
+        if (resId.length > 1) {
+            tab.setBackground(getListDrable(resId));
+        } else {
+            tab.setBackgroundResource(resId[0]);
+        }
         tab.setText(title);
         tab.setGravity(Gravity.CENTER);
         tab.setSingleLine();
@@ -240,6 +253,14 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
         if (currentPosition == 0) {
             pageListener.onPageSelected(0);
         }
+    }
+
+    private StateListDrawable getListDrable( @NonNull @Size(min = 2)int... resId) {
+        StateListDrawable listDrawable = new StateListDrawable();
+        listDrawable.addState(new int[]{android.R.attr.state_checked}, getResources().getDrawable(resId[0]));
+        listDrawable.addState(new int[]{android.R.attr.state_pressed}, getResources().getDrawable(resId[0]));
+        listDrawable.addState(new int[]{}, getResources().getDrawable(resId[1]));
+        return listDrawable;
     }
 
     private void addTab(final int position, View tab) {
