@@ -1,6 +1,8 @@
 package com.jonas.yun_library.utils;
 
+import android.content.Context;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 
 import java.io.File;
@@ -85,5 +87,9 @@ public class PhoneUtill {
             }
         }
         return isMIUI;
+    }
+
+    public static String getDeviceID(Context context) {
+        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 }

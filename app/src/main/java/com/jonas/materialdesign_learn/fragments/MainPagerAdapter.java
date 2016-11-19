@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import com.jonas.materialdesign_learn.R;
+import com.jonas.yun_library.tablayout.JPagerSlidingTabStrip;
 
 
 /**
@@ -13,7 +14,7 @@ import com.jonas.materialdesign_learn.R;
  *
  * Pager adapter for main activity.
  */
-public class MainPagerAdapter extends FragmentPagerAdapter {
+public class MainPagerAdapter extends FragmentPagerAdapter implements JPagerSlidingTabStrip.IconTabProvider {
 
 	public static final int NUM_ITEMS = 3;
 	public static final int ALL_POS = 0;
@@ -21,9 +22,14 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 	public static final int FAVORITES_POS = 2;
 
 	private Context context;
+	private final int[] mPressed;
+	private final int[] mNormal;
 
 	public MainPagerAdapter(Context context, FragmentManager fm) {
 		super(fm);
+
+		mNormal = new int[]{R.drawable.ic_account_box_black_18dp,R.drawable.ic_flight_land_black_18dp,R.drawable.ic_alarm_black_18dp};
+		mPressed = new int[]{R.drawable.ic_account_circle_black_18dp,R.drawable.ic_flight_takeoff_black_18dp,R.drawable.ic_alarm_off_black_18dp};
 		this.context = context;
 	}
 
@@ -58,5 +64,15 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
 	@Override
 	public int getCount() {
 		return NUM_ITEMS;
+	}
+
+	@Override
+	public int[] getPageIconResIds(int position) {
+		return new int[]{mNormal[position],mPressed[position]};
+	}
+
+	@Override
+	public int getPageIconResId(int position) {
+		return 0;
 	}
 }

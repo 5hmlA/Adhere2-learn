@@ -146,79 +146,16 @@ public class IntentUtill {
      *
      * @param cx
      * @param requestCode <pre>
-     *                                                                                    // 取出照片数据
-     *                                                                             Bundle extras = intent.getExtras();
-     *                                                                             Bitmap bitmap = (Bitmap) extras.get("data");
-     *                                                                              </pre>
+     *  取出照片数据
+     * Bundle extras = intent.getExtras();
+     * Bitmap bitmap = (Bitmap) extras.get("data");
+     *  </pre>
      */
     public static void takePicForResult(@NonNull Activity cx, int requestCode) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cx.startActivityForResult(intent, requestCode);
     }
 
-
-//    //另一种:
-////调用系统相机应用程序，并存储拍下来的照片
-//    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//    time=Calendar.getInstance().
-//
-//    getTimeInMillis();
-//
-//    intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(new
-//
-//    File(Environment
-//                 .getExternalStorageDirectory()
-//
-//    .
-//
-//    getAbsolutePath()
-//
-//    +"/tucue",time+".jpg")));
-//
-//    cx.startActivityForResult(intent,ACTIVITY_GET_CAMERA_IMAGE);
-
-//    //10.获取并剪切图片
-//// 获取并剪切图片
-//    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//    intent.setType("image/*");
-//    intent.putExtra("crop","true"); // 开启剪切
-//    intent.putExtra("aspectX",1); // 剪切的宽高比为1：2
-//    intent.putExtra("aspectY",2);
-//    intent.putExtra("outputX",20); // 保存图片的宽和高
-//    intent.putExtra("outputY",40);
-//    intent.putExtra("output",Uri.fromFile(new
-//
-//    File("/mnt/sdcard/temp")
-//
-//    )); // 保存路径
-//    intent.putExtra("outputFormat","JPEG");// 返回格式
-//
-//    cx.startActivityForResult(intent,0);
-
-//    // 剪切特定图片
-//    Intent intent = new Intent("com.android.camera.action.CROP");
-//    intent.setClassName("com.android.camera","com.android.camera.CropImage");
-//    intent.setData(Uri.fromFile(new
-//
-//    File("/mnt/sdcard/temp")
-//
-//    ));
-//    intent.putExtra("outputX",1); // 剪切的宽高比为1：2
-//    intent.putExtra("outputY",2);
-//    intent.putExtra("aspectX",20); // 保存图片的宽和高
-//    intent.putExtra("aspectY",40);
-//    intent.putExtra("scale",true);
-//    intent.putExtra("noFaceDetection",true);
-//    intent.putExtra("output",Uri.parse("file:///mnt/sdcard/temp"));
-//
-//    cx.startActivityForResult(intent,0);
-
-//    //11.打开Google Market
-//// 打开Google Market直接进入该程序的详细页面
-//    Uri uri = Uri.parse("market://details?id=" + "com.demo.app");
-//    Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//
-//    cx.startActivity(intent);
 
     /**
      * 进入手机设置界面:android.provider.Settings.ACTION_WIRELESS_SETTINGS

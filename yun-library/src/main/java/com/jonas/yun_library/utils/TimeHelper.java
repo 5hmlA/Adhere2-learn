@@ -13,7 +13,7 @@ import java.util.TimeZone;
  * @since [产品/模版版本]
  */
 
-public class TimeUtils {
+public class TimeHelper {
 
     private static String DateFormat_YMD = "yyyy-MM-dd";
     private static String DateFormat_hms = "HH:mm''ss\"";//44:20'30"
@@ -26,8 +26,11 @@ public class TimeUtils {
      */
     public static String sec2fotmat(int sec, String ymd) {
         SimpleDateFormat timeFormat = new SimpleDateFormat(ymd, Locale.getDefault());
-        timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return timeFormat.format(sec * 1000);
+        return timeFormat.format(new Date(sec*1000 - TimeZone.getDefault().getRawOffset()));
+    }
+
+    public static String secfotmat(int sec) {
+        return String.format("%02d\'%02d\"", sec % 3600 / 60, sec % 60);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.jonas.yun_library.utils;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -20,6 +21,15 @@ import java.util.regex.Pattern;
 public class SpanUtills {
 
     /**
+     * 整数
+     */
+    public static final String NUM_INTEGER = "\\d";
+    /**
+     * 小数 包括 整数
+     */
+    public static final String NUM_FLOAT = "\\d+.\\d+|\\d+";
+
+    /**
      * 国际化 不同国家排序不同
      * <pre>
      *      <string name="time_formart">%1$s\'%2$s\"</string>
@@ -35,13 +45,21 @@ public class SpanUtills {
      * @param o
      * @return
      */
-    public static String formatString(View view, int idRes, Object... o) {
+    public static String formatString(@NonNull View view, int idRes, Object... o) {
         String string = String.format(view.getContext().getResources().getString(idRes), o);
         if (!TextUtils.isEmpty(string) && view instanceof TextView) {
             ((TextView) view).setText(string);
         }
         return string;
     }
+
+    public static String getFString(Context context,int idRes, Object... objects) {
+        return String.format(context.getString(idRes), objects);
+    }
+//
+//    public static String getPString(Context context,int idRes, Object... objects) {
+//        return String.format(context.getString(idRes), objects);
+//    }
 
     /**
      * 替换 关键字 为某图片

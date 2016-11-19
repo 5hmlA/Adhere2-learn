@@ -181,6 +181,39 @@ public class BitmapUtils {
     }
 
 
+    public static Bitmap getRoundImage(Bitmap source) {
+
+        if (null == source) {
+            Log.e(TAG, "the srcBitmap is null");
+            return null;
+        }
+        int size = Math.min(source.getWidth(), source.getHeight());
+
+        int width = (source.getWidth() - size) / 2;
+        int height = (source.getHeight() - size) / 2;
+
+        Bitmap bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        Paint paint = new Paint();
+        BitmapShader shader =
+                new BitmapShader(source, BitmapShader.TileMode.CLAMP, BitmapShader.TileMode.CLAMP);
+        if (width != 0 || height != 0) {
+            Matrix matrix = new Matrix();
+            matrix.setTranslate(-width, -height);
+            shader.setLocalMatrix(matrix);
+        }
+        paint.setShader(shader);
+        paint.setAntiAlias(true);
+
+        float r = size / 2f;
+        canvas.drawCircle(r, r, r, paint);
+
+        source.recycle();
+        return bitmap;
+    }
+
+
     /**
      * TODO<图片沿着Y轴旋转一定角度>
      *

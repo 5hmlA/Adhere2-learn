@@ -25,15 +25,13 @@
     <dimen name="fab_elevation">4dp</dimen>
     <dimen name="fab_sheet_elevation">0dp</dimen>
 
-    <dimen name="drawer_header_height">200dp</dimen>
-    <dimen name="drawer_header_textsize">20sp</dimen>
-    <dimen name="drawer_header_text_spacing">@dimen/keyline_spacing</dimen>
-
     <dimen name="note_spacing">4dp</dimen>
     <dimen name="note_content_spacing">16dp</dimen>
     <dimen name="note_corner_radius">2dp</dimen>
     <dimen name="note_textsize">14sp</dimen>
     <dimen name="note_title_textsize">24sp</dimen>
+    <dimen name="sug_event_tabheight">28dp</dimen>
+    <dimen name="tabstrip_textsize">15dp</dimen>
 
 
 </resources>

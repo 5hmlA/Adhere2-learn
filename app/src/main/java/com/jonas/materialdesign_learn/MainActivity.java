@@ -8,6 +8,8 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.jonas.yun_library.utils.TimeHelper;
+
 public class MainActivity extends ListActivity {
 
     private String items[] = new String[]{
@@ -27,7 +29,8 @@ public class MainActivity extends ListActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags();
+        System.out.println(TimeHelper.sec2fotmat(24*60*60-1));
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON|WindowManager.LayoutParams.FLAG_FULLSCREEN);
         ArrayAdapter arrayAdapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, items);
         setListAdapter(arrayAdapter);
