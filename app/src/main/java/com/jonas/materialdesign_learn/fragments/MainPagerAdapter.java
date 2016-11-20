@@ -29,7 +29,8 @@ public class MainPagerAdapter extends FragmentPagerAdapter implements JPagerSlid
 		super(fm);
 
 		mNormal = new int[]{R.drawable.ic_account_box_black_18dp,R.drawable.ic_flight_land_black_18dp,R.drawable.ic_alarm_black_18dp};
-		mPressed = new int[]{R.drawable.ic_account_circle_black_18dp,R.drawable.ic_flight_takeoff_black_18dp,R.drawable.ic_alarm_off_black_18dp};
+//		mPressed = new int[]{R.drawable.ic_account_circle_black_18dp,R.drawable.ic_flight_takeoff_black_18dp,R.drawable.ic_alarm_off_black_18dp};
+		mPressed = new int[]{R.drawable.tab1,R.drawable.tab2,R.drawable.tab3};
 		this.context = context;
 	}
 
@@ -68,11 +69,12 @@ public class MainPagerAdapter extends FragmentPagerAdapter implements JPagerSlid
 
 	@Override
 	public int[] getPageIconResIds(int position) {
-		return new int[]{mNormal[position],mPressed[position]};
+//		return new int[]{mNormal[position],mPressed[position]};
+		return null;
 	}
 
 	@Override
 	public int getPageIconResId(int position) {
-		return 0;
+		return mPressed[position];
 	}
 }
