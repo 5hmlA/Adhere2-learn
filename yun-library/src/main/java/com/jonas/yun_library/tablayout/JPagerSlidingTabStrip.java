@@ -263,7 +263,6 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
                 if(resId.length>1) {
                     tab.setCompoundDrawablesWithIntrinsicBounds(null, getListDrable(resId), null, null);
                 }else {
-                    Log.e(TAG, "need two drawable,given 1 resId");
                     tab.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(getContext(), resId[0]),
                             null, null);
                 }
