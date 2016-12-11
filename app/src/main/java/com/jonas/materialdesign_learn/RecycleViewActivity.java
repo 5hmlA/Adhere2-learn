@@ -45,6 +45,7 @@ public class RecycleViewActivity extends AppCompatActivity {
         mTabStrip.setTextSize(getDimen(R.dimen.tabstrip_textsize));
         //        mTabStrip.setTextColor(Color.parseColor("#FB6522"));
         mTabStrip.setTextColorStateResource(R.drawable.tabstripbg);
+
         mTabStrip.setDividerColor(Color.parseColor("#FACDB9"));
         mTabStrip.setDividerPadding(0);
         mTabStrip.setUnderlineColor(Color.TRANSPARENT);
@@ -56,6 +57,7 @@ public class RecycleViewActivity extends AppCompatActivity {
         mTabStripb.setShouldExpand(true);
         mTabStripb.setDrawAll(false);
         mTabStripb.setTabMode(JPagerSlidingTabStrip.MODE_BUTTOM);
+        mTabStripb.setTextColorStateResource(R.drawable.tabstripbg);
         mTabStripb.setViewPager(vp);
     }
 

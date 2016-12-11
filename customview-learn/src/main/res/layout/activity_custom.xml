@@ -9,17 +9,23 @@
     android:orientation="vertical"
     tools:context="jonas.customview_learn.CustomActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <jonas.customview_learn.view.LinearGradientView
+        android:id="@+id/lv"
+
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="30dp"/>
 
-    </android.support.design.widget.AppBarLayout>
-
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/vp"
+    <jonas.customview_learn.view.JProgView
+        android:id="@+id/jpv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="50dp"
+        android:layout_margin="10dp"
+        android:onClick="progress"/>
+
+    <jonas.customview_learn.view.PlayPause
+        android:id="@+id/pp"
+        android:layout_width="150dp"
+        android:layout_margin="50dp"
+        android:layout_height="50dp"/>
 
 </LinearLayout>

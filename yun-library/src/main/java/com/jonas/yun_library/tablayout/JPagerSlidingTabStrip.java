@@ -19,6 +19,7 @@ import android.support.annotation.Size;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -26,12 +27,15 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Checkable;
+import android.widget.CheckedTextView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -66,6 +70,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     public static final int MODE_BUTTOM = 1;
     private int mTabMode = MODE_TOP;
     private static final String TAG = JPagerSlidingTabStrip.class.getSimpleName();
+    private int mLastCheckedPosition = -1;
 
     @IntDef({MODE_TOP, MODE_BUTTOM})
     public @interface TabMode {}
@@ -73,6 +78,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     public interface IconTabProvider {
         /**
          * 如果 返回 null 則調用getPageIconResId
+         *
          * @param position
          *         1,简单的背景图片
          *         2，0为checked pressed背景  1为normal背景
@@ -97,7 +103,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     private RadioGroup tabsContainer;
     private ViewPager pager;
 
-    private int tabCount;
+    private int mTabCount;
 
     private int currentPosition = 0;
     private float currentPositionOffset = 0f;
@@ -119,14 +125,15 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     private int tabPadding = 24;
     private int dividerWidth = 1;
 
-    private int tabTextSize = 8;
+    private int tabTextSize = 11;
     private int tabTextColor = 0xFF666666;
     private Typeface tabTypeface = null;
-    private int tabTypefaceStyle = Typeface.BOLD;
+    private int tabTypefaceStyle = Typeface.NORMAL;
 
     private int lastScrollX = 0;
 
     private Locale locale;
+    private List<TextPaint> mTextPaints = new ArrayList<>();
 
     public JPagerSlidingTabStrip(Context context){
         this(context, null);
@@ -201,7 +208,6 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
     public void setViewPager(ViewPager pager){
         this.pager = pager;
-
         if(pager.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
         }
@@ -218,8 +224,8 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     public void notifyDataSetChanged(){
 
         tabsContainer.removeAllViews();
-        tabCount = pager.getAdapter().getCount();
-        for(int i = 0; i<tabCount; i++) {
+        mTabCount = pager.getAdapter().getCount();
+        for(int i = 0; i<mTabCount; i++) {
 
             if(pager.getAdapter() instanceof IconTabProvider) {
                 if(( (IconTabProvider)pager.getAdapter() ).getPageIconResIds(i) != null) {
@@ -235,6 +241,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
         }
         updateTabStyles();
         currentPosition = pager.getCurrentItem();
+        check(currentPosition);
     }
 
     private void addTextTab(final int position, String title){
@@ -246,8 +253,10 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
             Log.e(TAG, "title is null ");
             return;
         }
-        RadioButton tab = new RadioButton(getContext());
-        tab.setButtonDrawable(android.R.color.transparent);
+        CheckedTextView tab = new CheckedTextView(getContext());
+//        RadioButton tab = new RadioButton(getContext());//radiogroup 会保证RadioButton只有一个checked为true
+        tab.setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
+//        tab.setButtonDrawable(android.R.color.transparent);
         tab.setGravity(Gravity.CENTER);
         if(!mDrawAll) {
             if(mTabMode == MODE_TOP) {
@@ -259,7 +268,6 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
             }else {
                 tab.setCompoundDrawablePadding(0);
                 tab.setSingleLine();
-
                 if(resId.length>1) {
                     tab.setCompoundDrawablesWithIntrinsicBounds(null, getListDrable(resId), null, null);
                 }else {
@@ -293,22 +301,16 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
                 pager.setCurrentItem(position);
             }
         });
-
         tab.setPadding(tabPadding, 0, tabPadding, 0);
         tabsContainer.addView(tab, position, shouldExpand ? expandedTabLayoutParams : defaultTabLayoutParams);
     }
 
     private void updateTabStyles(){
-        if(mW<=0) {
-            return;
-        }
 
-        for(int i = 0; i<tabCount; i++) {
+        for(int i = 0; i<mTabCount; i++) {
 
             View v = tabsContainer.getChildAt(i);
-
             if(v instanceof TextView) {
-
                 TextView tab = (TextView)v;
                 tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
                 tab.setTypeface(tabTypeface, tabTypefaceStyle);
@@ -333,7 +335,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
     private void scrollToChild(int position, int offset){
 
-        if(tabCount == 0) {
+        if(mTabCount == 0) {
             return;
         }
         int newScrollX = tabsContainer.getChildAt(position).getLeft()+offset;
@@ -350,7 +352,6 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh){
         super.onSizeChanged(w, h, oldw, oldh);
-
         float pading = dp2dip(0.5f);
         mW = w-pading;
         mH = h-pading;
@@ -360,6 +361,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
             mClipath.addRoundRect(clip, mH/2f, mH/2f, Path.Direction.CCW);
             mOutRadio = mH/2;
         }
+
         if(mTabMode == MODE_BUTTOM) {
             indicatorHeight = (int)mH;
         }
@@ -369,8 +371,8 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
 
-        //        if (isInEditMode() || tabCount == 0 || mTabMode != MODE_TOP) {
-        if(isInEditMode() || tabCount == 0) {
+        //        if (isInEditMode() || mTabCount == 0 || mTabMode != MODE_TOP) {
+        if(isInEditMode() || mTabCount == 0) {
             return;
         }
 
@@ -383,7 +385,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
         float lineRight = currentTab.getRight();
 
         // if there is an offset, start interpolating left and right coordinates between current and next tab
-        if(currentPositionOffset>0f && currentPosition<tabCount-1) {
+        if(currentPositionOffset>0f && currentPosition<mTabCount-1) {
 
             View nextTab = tabsContainer.getChildAt(currentPosition+1);
             final float nextTabLeft = nextTab.getLeft();
@@ -410,7 +412,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
         // draw divider
         dividerPaint.setColor(dividerColor);
-        for(int i = 0; i<tabCount-1; i++) {
+        for(int i = 0; i<mTabCount-1; i++) {
             View tab = tabsContainer.getChildAt(i);
             canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), mH-dividerPadding, dividerPaint);
         }
@@ -423,9 +425,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
             currentPosition = position;
             currentPositionOffset = positionOffset;
-
             scrollToChild(position, (int)( positionOffset*tabsContainer.getChildAt(position).getWidth() ));
-
             invalidate();
 
             if(delegatePageListener != null) {
@@ -446,12 +446,19 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
         @Override
         public void onPageSelected(int position){
-            ( (RadioButton)tabsContainer.getChildAt(position) ).setChecked(true);
+            check(position);
             if(delegatePageListener != null) {
                 delegatePageListener.onPageSelected(position);
             }
         }
 
+    }
+
+    private void check(int position){
+        if(mLastCheckedPosition!=-1)
+            ( (Checkable)tabsContainer.getChildAt(mLastCheckedPosition) ).setChecked(false);
+        mLastCheckedPosition = position;
+        ( (Checkable)tabsContainer.getChildAt(position) ).setChecked(true);
     }
 
     public void setIndicatorColor(int indicatorColor){
@@ -460,7 +467,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     }
 
     public void setIndicatorColorResource(int resId){
-        this.indicatorColor = getResources().getColor(resId);
+        this.indicatorColor = ContextCompat.getColor(getContext(),resId);
         invalidate();
     }
 

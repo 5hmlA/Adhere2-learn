@@ -75,6 +75,7 @@ public class MainPagerAdapter extends FragmentPagerAdapter implements JPagerSlid
 
 	@Override
 	public int getPageIconResId(int position) {
+//		return mPressed[position];
 		return mPressed[position];
 	}
 }
