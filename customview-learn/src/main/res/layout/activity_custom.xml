@@ -24,8 +24,9 @@
 
     <jonas.customview_learn.view.PlayPause
         android:id="@+id/pp"
+        android:background="#fcfc"
         android:layout_width="150dp"
         android:layout_margin="50dp"
-        android:layout_height="50dp"/>
+        android:layout_height="150dp"/>
 
 </LinearLayout>

@@ -23,7 +23,8 @@ public class CustomActivity extends AppCompatActivity {
         mLv = (LinearGradientView)findViewById(R.id.lv);
 
         PlayPause playPause = (PlayPause)findViewById(R.id.pp);
-        playPause.setPauseFirst().setOnStateChangeListener(new PlayPause.OnStateChangeListener() {
+        playPause.setPauseFirst().setRotateAble(false).setPading(20).setOnStateChangeListener(new PlayPause
+                .OnStateChangeListener() {
             @Override
             public void stateChanged(boolean play){
                 System.out.println(play+"----------");

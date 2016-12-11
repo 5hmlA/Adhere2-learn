@@ -17,6 +17,13 @@
         android:layout_marginTop="16dp"
         android:textAllCaps="false"
         android:text="@string/layout_basestate_retry"/>
+    <CheckedTextView
+        android:layout_width="350dp"
+        android:text="将住宿地方加速的积分"
+        android:textAlignment="gravity"
+        android:gravity="center"
+        android:background="#fcf"
+        android:layout_height="50dp"/>
 
     <!--seekbar在Lollipop上自定义thumb的适配问题 透明无效 android:splitTrack="false"-->
     <!--The Material seek bar has split track enabled by default. You need to turn it off.-->

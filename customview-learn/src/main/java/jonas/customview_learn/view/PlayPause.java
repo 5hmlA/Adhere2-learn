@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -18,9 +19,9 @@ import android.view.animation.DecelerateInterpolator;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class PlayPause extends View implements View.OnClickListener, ValueAnimator.AnimatorUpdateListener {
-    private int mSide;
+    private static final long DURATION = 500;
+    private float mSide;
     private PointF mCenter;
-    private boolean isPlay = true;
     private PointF mGa;
     private PointF mGb;
     private PointF mGc;
@@ -30,7 +31,7 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     private PointF mI;
     private Path mPathR;
     private Path mPathL;
-    private Paint mPLeft;
+    private Paint mPaint;
     private PointF mLeft1;
     private PointF mLeft2;
     private PointF mRitht4;
@@ -40,11 +41,20 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     private ValueAnimator mAnimator;
     private float mRotate = 0;
     private OnStateChangeListener mListener;
+    private float mPading;
+    private boolean isPlay = true;
+    private boolean mRotateAble = true;
+
+    private static final int NORMAL = 0;
+    private static final int YOUTUBE = 1;
+    private int mStyle = YOUTUBE;
+    @IntDef({NORMAL, YOUTUBE})
+    public @interface STYLE {}
 
     {
-        mPLeft = new Paint(Paint.ANTI_ALIAS_FLAG);
-        //        mPLeft.setColor(Color.WHITE);
-        mPLeft.setStyle(Paint.Style.FILL);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        //        mPaint.setColor(Color.WHITE);
+        mPaint.setStyle(Paint.Style.FILL);
 
     }
 
@@ -76,9 +86,12 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     }
 
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh){
-        super.onSizeChanged(w, h, oldw, oldh);
-        mSide = w;
+    protected void onSizeChanged(int w1, int h1, int oldw, int oldh){
+        super.onSizeChanged(w1, h1, oldw, oldh);
+//        mPading = 0;
+        mSide = w1-2*mPading;
+        float w = mSide;
+        float h = mSide;
         mCenter = new PointF(w/2f, h/2f);
         mGa = new PointF(0, 0);
         mGb = new PointF(w, h/2f);
@@ -86,8 +99,13 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
         mD = new PointF(w/2f, h/4f);
         mE = new PointF(w/2f, h*3f/4f);
 
-        mH = new PointF(w*3f/4f, h*3f/8f);
-        mI = new PointF(w*3f/4f, h*5f/8f);
+        if(mStyle == NORMAL) {
+            mH = new PointF(w*3f/4f, h*3f/8f);
+            mI = new PointF(w*3f/4f, h*5f/8f);
+        }else {
+            mH = new PointF(mGb.x, mGb.y);
+            mI = new PointF(mGb.x, mGb.y);
+        }
 
         mLeft1 = new PointF(mD.x, mD.y);
         mLeft2 = new PointF(mE.x, mE.y);
@@ -111,18 +129,19 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     }
 
     private void ConstructPath(){
+        //左半部分
         if(!mPathL.isEmpty()) {
             mPathL.reset();
-        }
-        if(!mPathR.isEmpty()) {
-            mPathR.reset();
         }
         mPathL.moveTo(mGa.x, mGa.y);
         mPathL.lineTo(mLeft1.x, mLeft1.y);
         mPathL.lineTo(mLeft2.x, mLeft2.y);
         mPathL.lineTo(mGc.x, mGc.y);
         mPathL.close();
-
+        //右半部份
+        if(!mPathR.isEmpty()) {
+            mPathR.reset();
+        }
         mPathR.moveTo(mRitht1.x, mRitht1.y);
         mPathR.lineTo(mRitht3.x, mRitht3.y);
         mPathR.lineTo(mGb.x, mGb.y);
@@ -135,9 +154,12 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     @Override
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        canvas.rotate(mRotate, mCenter.x, mCenter.y);
-        canvas.drawPath(mPathL, mPLeft);
-        canvas.drawPath(mPathR, mPLeft);
+        canvas.translate(mPading,mPading);
+        if(mRotateAble) {
+            canvas.rotate(mRotate, mCenter.x, mCenter.y);
+        }
+        canvas.drawPath(mPathL, mPaint);
+        canvas.drawPath(mPathR, mPaint);
     }
 
     //和 数学方程一致
@@ -148,8 +170,15 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     }
 
     private void calcuteR3(float x){//h
-        mRitht3.x = x;
-        mRitht3.y = -1.5f*x+1.5f*mSide;
+        if(mStyle == NORMAL) {
+            mRitht3.x = x;
+            mRitht3.y = -1.5f*x+1.5f*mSide;
+        }else {
+            mRitht3.x = mGb.x;
+            //0--3/8  0--4/8===>(0,0)-(3/8,4/8)
+            mRitht3.y = ( -1.5f*x+1.5f*mSide )*4/3f;
+        }
+
     }
 
     private void calcuteR4(PointF Ritht3){//mRitht4
@@ -173,14 +202,14 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
         if(isPlay = !isPlay) {
             //pause --- play
             mAnimator = ValueAnimator.ofFloat(1/3f, 1/2f);
-            mAnimator.setDuration(500);
+            mAnimator.setDuration(DURATION);
             mAnimator.addUpdateListener(this);
             mAnimator.setInterpolator(new DecelerateInterpolator());
             mAnimator.start();
         }else {
             //play --- pause
             mAnimator = ValueAnimator.ofFloat(1/2f, 1/3f);
-            mAnimator.setDuration(500);
+            mAnimator.setDuration(DURATION);
             mAnimator.setInterpolator(new DecelerateInterpolator());
             mAnimator.addUpdateListener(this);
             mAnimator.start();
@@ -193,7 +222,9 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
     @Override
     public void onAnimationUpdate(ValueAnimator animation){
         float animatedValue = (float)animation.getAnimatedValue();
-        mRotate = 540-1080*animatedValue;
+        if(mRotateAble) {
+            mRotate = 540-1080*animatedValue;
+        }
         calcuteL1(animatedValue*mSide);
         calcuteR3(( -3f/2f*animatedValue+3/2f )*mSide);
         calcuteR1(mLeft1);
@@ -214,7 +245,26 @@ public class PlayPause extends View implements View.OnClickListener, ValueAnimat
         return this;
     }
 
-    public interface OnStateChangeListener{
+    public interface OnStateChangeListener {
         void stateChanged(boolean play);
     }
+
+    public int getStyle(){
+        return mStyle;
+    }
+
+    public PlayPause setStyle(@STYLE int style){
+        mStyle = style;
+        return this;
+    }
+
+    public PlayPause setRotateAble(boolean rotateAble){
+        mRotateAble = rotateAble;
+        return this;
+    }
+    public PlayPause setPading(float pading){
+        mPading = pading;
+        return this;
+    }
+
 }
