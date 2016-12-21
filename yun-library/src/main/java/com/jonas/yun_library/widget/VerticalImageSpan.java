@@ -8,13 +8,12 @@ import android.graphics.drawable.Drawable;
 import android.text.style.ImageSpan;
 
 /**
- * 居中的 ImageSpan
- * @author jiangzuyun.
- * @date 2016/1/27
- * @des [一句话描述]
- * @since [产品/模版版本]
+ * @author yun.
+ * @date 2016/12/21
+ * @des [居中的 ImageSpan]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
-
 public class VerticalImageSpan extends ImageSpan {
     public VerticalImageSpan(Context context, int resourceId) {
         super(context, resourceId);

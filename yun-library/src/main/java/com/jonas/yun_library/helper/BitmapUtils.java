@@ -1,4 +1,4 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -31,13 +31,12 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 
 /**
- * @author jiangzuyun.
- * @date 2016/7/15
+ * @author yun.
+ * @date 2016/12/21
  * @des [一句话描述]
- * @since [产品/模版版本]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
-
-
 public class BitmapUtils {
 
     private static final String TAG = BitmapUtils.class.getSimpleName();

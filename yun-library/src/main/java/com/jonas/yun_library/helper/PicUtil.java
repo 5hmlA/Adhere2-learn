@@ -1,4 +1,4 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
 import android.text.TextUtils;
 import android.widget.ImageView;
@@ -6,12 +6,12 @@ import android.widget.ImageView;
 import com.squareup.picasso.Picasso;
 
 /**
- * @author jiangzuyun.
- * @date 2016/1/27
+ * @author yun.
+ * @date 2016/12/21
  * @des [一句话描述]
- * @since [产品/模版版本]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
-
 public class PicUtil {
 
     public static void loadImage(String url, ImageView view) {

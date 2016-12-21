@@ -1,4 +1,4 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -12,10 +12,11 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.view.View;
 
 /**
- * @author jiangzuyun.
- * @date 2016/7/15
- * @des [一句话描述]
- * @since [more : https://github.com/wasabeef/Blurry]
+ * @author yun.
+ * @date 2016/12/21
+ * @des [more : https://github.com/wasabeef/Blurry]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class BitmapBlurHelper {
     //缩放系数

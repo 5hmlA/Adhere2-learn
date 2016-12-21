@@ -11,10 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @author jwx338756.
- * @date 2016/1/27
+ * @author yun.
+ * @date 2016/12/21
  * @des [带有 网络状态加载界面的基类]
- * @since [产品/模版版本]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public abstract class BaseStateActivity extends Activity {
 

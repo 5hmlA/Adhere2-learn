@@ -26,10 +26,10 @@ import java.util.List;
  * @author yun
  * @date 2016/1/27
  * @des [recycleview适配器 基类，上拉加载更多,多类型布局,拖拽,滑动删除 支持]
- * @since [https://github.com/mychoices]
+ * @since [https://github.com/ZuYun]
  * <p>
  * <a href="https://github.com/wasabeef/recyclerview-animators">动画参考</a></p>
- * <a href="https://github.com/mychoices">github</a>
+ * <a href="https://github.com/ZuYun">github</a>
  */
 public abstract class AwesomeRecvAdapter<T> extends RecyclerView.Adapter<RecyclerHolder> implements View.OnClickListener, DragSwipeAdapter {
 

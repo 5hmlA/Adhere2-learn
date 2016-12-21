@@ -1,26 +1,33 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.Settings;
-import android.util.Log;
+import android.util.TypedValue;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.Properties;
 import java.util.UUID;
 
 /**
- * @author jiangzuyun.
- * @date 2016/1/27
- * @des [获取手机相关信息]
- * @since [产品/模版版本]
+ * @author yun.
+ * @date 2016/12/21
+ * @des [一句话描述]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
+public class PhoneHelper {
+    private String getPhoneInfo() {
+        String phoneInfo =
+                "手机型号:" + android.os.Build.MODEL +
+                        ",SDK版本:" + android.os.Build.VERSION.SDK +
+                        ",系统版本:" + android.os.Build.VERSION.RELEASE
+                        + "制造商：" + Build.BRAND
+                        + "产品名：" + Build.PRODUCT;
+        return phoneInfo;
+    }
 
-public class PhoneUtill {
     /**
      * 通过android.os.Build 类，可以直接获得一些 Build 提供的系统信息。Build类包含了系统编译时，--编译时哦--的大量设备、配置信息，下面 列举一些常用的信息：
      * Build.BOARD : 主板 :BalongV9R1
@@ -62,46 +69,79 @@ public class PhoneUtill {
      * System.getProperty("java.home") : Java Home属性 ：/system
      */
 
-    private static final String LOG_TAG = "PhoneUtill";
+    private static final String LOG_TAG = "PhoneHelper";
+
+    /**
+     * 检查是否是华为
+     *
+     * @return boolean
+     */
+    public static boolean isHUAWEI() {
+        boolean ishuawei = false;
+        //手机型号             制造商
+        if (android.os.Build.MODEL.startsWith("HUAWEI")&&Build.BRAND.startsWith("HUAWEI")) {
+            ishuawei = true;
+        }
+        return ishuawei;
+    }
 
     /**
      * 检查是否是MIUI
      *
      * @return boolean
      */
-    public static boolean isMIUI(){
+    public static boolean isMIUI() {
         boolean isMIUI = false;
-        FileInputStream fileInputStream = null;
-        try {
-            Properties prop = new Properties();
-            File file = new File(Environment.getRootDirectory(), "build.prop");
-            fileInputStream = new FileInputStream(file);
-            prop.load(fileInputStream);
-            isMIUI = prop.getProperty("ro.miui.ui.version.code", null) != null ||
-                    prop.getProperty("ro.miui.ui.version.name", null) != null ||
-                    prop.getProperty("ro.miui.internal.storage", null) != null;
-        }catch(Exception e) {
-            Log.e(LOG_TAG, "isMIUI IOException->"+e.getMessage());
-        }finally {
-            if(fileInputStream != null) {
-                try {
-                    fileInputStream.close();
-                }catch(Exception e) {
-                    Log.e(LOG_TAG, "isMIUI Close InputStream IOException->"+e.getMessage());
-                }
-            }
+        //手机型号             制造商
+        if (android.os.Build.MODEL.startsWith("MI")&&Build.BRAND.startsWith("Xiaomi")) {
+            isMIUI = true;
         }
+//        FileInputStream fileInputStream = null;
+//        try {
+//            Properties prop = new Properties();
+//            File file = new File(Environment.getRootDirectory(), "build.prop");
+//            fileInputStream = new FileInputStream(file);
+//            prop.load(fileInputStream);
+//            isMIUI = prop.getProperty("ro.miui.ui.version.code", null) != null ||
+//                    prop.getProperty("ro.miui.ui.version.name", null) != null ||
+//                    prop.getProperty("ro.miui.internal.storage", null) != null;
+//        }catch(Exception e) {
+//            Log.e(LOG_TAG, "isMIUI IOException->"+e.getMessage());
+//        }finally {
+//            if(fileInputStream != null) {
+//                try {
+//                    fileInputStream.close();
+//                }catch(Exception e) {
+//                    Log.e(LOG_TAG, "isMIUI Close InputStream IOException->"+e.getMessage());
+//                }
+//            }
+//        }
+
         return isMIUI;
     }
 
-    public static String getDeviceID(Context context){
+    public static String getDeviceID(Context context) {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
-    public static int getStatusBarHeight(){
+    public static int getStatusBarHeight() {
         Resources system = Resources.getSystem();
         int resourceId = system.getIdentifier("status_bar_height", "dimen", "android");
         return system.getDimensionPixelSize(resourceId);
+    }
+
+    /**
+     * 获取ActionBar高度
+     *
+     * @param activity activity
+     * @return ActionBar高度
+     */
+    public static int getActionBarHeight(Activity activity) {
+        TypedValue tv = new TypedValue();
+        if (activity.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            return TypedValue.complexToDimensionPixelSize(tv.data, activity.getResources().getDisplayMetrics());
+        }
+        return 0;
     }
 
     /**
@@ -111,40 +151,40 @@ public class PhoneUtill {
      * @param resName
      * @return
      */
-    public static Drawable getResDrawable(Context context, String resName){
+    public static Drawable getResDrawable(Context context, String resName) {
         int drawableId = context.getResources().getIdentifier(resName, "drawable", context.getPackageName());
         return context.getResources().getDrawable(drawableId);
     }
 
-    public static Drawable getResString(Context context, String resName){
+    public static Drawable getResString(Context context, String resName) {
         int drawableId = context.getResources().getIdentifier(resName, "string", context.getPackageName());
         return context.getResources().getDrawable(drawableId);
     }
 
     //获得独一无二的Psuedo ID
-    public static String getUniquePsuedoID(){
+    public static String getUniquePsuedoID() {
         String serial = null;
 
-        String m_szDevIDShort = "35"+
-                Build.BOARD.length()%10+Build.BRAND.length()%10+
+        String m_szDevIDShort = "35" +
+                Build.BOARD.length() % 10 + Build.BRAND.length() % 10 +
 
-                Build.CPU_ABI.length()%10+Build.DEVICE.length()%10+
+                Build.CPU_ABI.length() % 10 + Build.DEVICE.length() % 10 +
 
-                Build.DISPLAY.length()%10+Build.HOST.length()%10+
+                Build.DISPLAY.length() % 10 + Build.HOST.length() % 10 +
 
-                Build.ID.length()%10+Build.MANUFACTURER.length()%10+
+                Build.ID.length() % 10 + Build.MANUFACTURER.length() % 10 +
 
-                Build.MODEL.length()%10+Build.PRODUCT.length()%10+
+                Build.MODEL.length() % 10 + Build.PRODUCT.length() % 10 +
 
-                Build.TAGS.length()%10+Build.TYPE.length()%10+
+                Build.TAGS.length() % 10 + Build.TYPE.length() % 10 +
 
-                Build.USER.length()%10; //13 位
+                Build.USER.length() % 10; //13 位
 
         try {
             serial = android.os.Build.class.getField("SERIAL").get(null).toString();
             //API>=9 使用serial号
             return new UUID(m_szDevIDShort.hashCode(), serial.hashCode()).toString();
-        }catch(Exception exception) {
+        } catch (Exception exception) {
             //serial需要一个初始化
             serial = "serial"; // 随便一个初始化
         }

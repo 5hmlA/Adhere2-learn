@@ -19,10 +19,12 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * 自动换行布局
- *
- * @author Refuse
+ /**
+ * @author yun.
+ * @date 2016/12/21
+ * @des [自动换行布局]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class FlowLayout extends ViewGroup implements View.OnClickListener {
 

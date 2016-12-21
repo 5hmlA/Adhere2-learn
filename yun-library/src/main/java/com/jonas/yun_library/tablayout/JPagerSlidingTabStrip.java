@@ -39,14 +39,10 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * @author jwx338756.
- * @date 2016/1/27
- * @des [changefrom: https://github.com/astuetz/PagerSlidingTabStrip/blob/master/library/src/com/astuetz/PagerSlidingTabStrip.java]
- * @since [产品/模版版本]
  * mTabStrip.setShouldExpand(true);
  * mTabStrip.setAllCaps(false);
  * mTabStrip.setTextSize(getDimen(R.dimen.sug_event_textsize));
- * //        mTabStrip.setTextColor(Color.parseColor("#FB6522"));
+ * mTabStrip.setTextColor(Color.parseColor("#FB6522"));
  * mTabStrip.setTextColorStateResource(R.drawable.sug_tab_bg);
  * mTabStrip.setDividerColor(Color.parseColor("#FACDB9"));
  * mTabStrip.setDividerPadding(0);
@@ -57,6 +53,13 @@ import java.util.Locale;
  * radioButton.setButtonDrawable(android.R.color.transparent);   ==  android:button="@null"
  * //代码里面 设置字体颜色状态选择器 selector(ColorStateList)
  * setTextColor(ContextCompat.getColorStateList(getContext(), R.color.textview_selector));
+ */
+/**
+ * @author yun.
+ * @date 2016/12/21
+ * @des [一句话描述]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class JPagerSlidingTabStrip extends HorizontalScrollView {
 

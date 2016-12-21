@@ -1,4 +1,4 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 /**
  * 只要把要保持原样的内容 放在<pre>  </pre>标签之内，就会保持原样输出。
  */
-public class SpanUtills {
+public class SpanHelper {
 
     /**
      * 整数

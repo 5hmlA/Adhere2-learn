@@ -8,13 +8,12 @@ import android.view.MotionEvent;
 import android.widget.RelativeLayout;
 
 /**
- * @author jiangzuyun.
- * @date 2016/7/6
+ * @author yun.
+ * @date 2016/12/21
  * @des [一句话描述]
- * @since [产品/模版版本]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
-
-
 public class OverLayout extends RelativeLayout implements GestureDetector.OnGestureListener {
 
     private GestureDetectorCompat mGestureDetectorCompat;

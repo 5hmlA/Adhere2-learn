@@ -1,4 +1,4 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -8,7 +8,11 @@ import android.widget.TextView;
 import com.jonas.yun_library.R;
 
 /**
- * Created on 2016/1/10.  by jwx338756
+ * @author yun.
+ * @date 2016/12/21
+ * @des [一句话描述]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class DialogHelper {
     private final Dialog mDialog;
@@ -17,7 +21,7 @@ public class DialogHelper {
         mDialog = new Dialog(activity, R.style.transDialogStyle);
 //        mDialog = new Dialog(activity.getApplicationContext(), R.style.sugDialogStyle);
 //        // 全局弹出提示对话框，不需要使用activity上下文
-//        if (PhoneUtill.isMIUI()) {
+//        if (PhoneHelper.isMIUI()) {
 //            mDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST) ;//小米手机使用次方式
 //        }else {
 //            mDialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT) ;

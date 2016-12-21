@@ -12,14 +12,12 @@ import android.graphics.Shader;
 import android.util.AttributeSet;
 import android.view.View;
 
-
 /**
- *
- * @Author jwx338756
- * @Date: 2016
- * @Description: 下载进度
- * @Others:
- *
+ * @author yun.
+ * @date 2016/12/21
+ * @des [一句话描述]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class ProgressButton extends View {
 

@@ -21,7 +21,7 @@ import java.util.List;
  * @author 赟.
  * @date 2016/1/27
  * @des [recycleview适配器 基类,支持多种布局,拖拽,滑动删除]
- * @since [https://github.com/mychoices]
+ * @since [https://github.com/ZuYun]
  *
  * <p> 动画参考  https://github.com/wasabeef/recyclerview-animators
  */

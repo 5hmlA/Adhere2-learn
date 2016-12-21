@@ -10,14 +10,12 @@ import android.widget.RelativeLayout;
 
 import com.jonas.yun_library.listener.OnSlidingListener;
 
-
 /**
- *
- * @Author yun
- * @Date: 2016
- * @Description: 支持上下滑动的布局
- * @Others:
- *
+ * @author yun.
+ * @date 2016/12/21
+ * @des [一句话描述]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class SlideEffectLayout extends RelativeLayout {
 

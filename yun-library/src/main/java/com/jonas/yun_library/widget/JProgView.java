@@ -21,16 +21,16 @@ import android.support.annotation.Size;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.jonas.yun_library.utils.DrawHelper;
+import com.jonas.yun_library.helper.DrawHelper;
 
 import java.text.NumberFormat;
 
-
 /**
- * @Author jwx338756
- * @Date: 2016
- * @Description: 下载进度
- * @Others: http://www.cnblogs.com/tianzhijiexian/p/4297664.html
+ * @author yun.
+ * @date 2016/12/21
+ * @des [一句话描述]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class JProgView extends View {
 

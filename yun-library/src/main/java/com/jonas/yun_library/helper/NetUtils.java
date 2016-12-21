@@ -1,4 +1,4 @@
-package com.jonas.yun_library.utils;
+package com.jonas.yun_library.helper;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,12 +6,12 @@ import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
 /**
- * @author jiangzuyun.
- * @date 2016/6/22
+ * @author yun.
+ * @date 2016/12/21
  * @des [一句话描述]
- * @since [产品/模版版本]
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
-
 public class NetUtils {
     /**
      * 哪个页面需要intent传参数 哪个页面自己定义常量

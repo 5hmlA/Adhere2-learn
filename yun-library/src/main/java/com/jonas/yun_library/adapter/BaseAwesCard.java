@@ -6,8 +6,8 @@ import android.content.Context;
  * @author yun.
  * @date 2016/7/7
  * @des [recycleview的holder 包括填充数据]
- * @since [https://github.com/mychoices]
- * <p><a href="https://github.com/mychoices">github</a>
+ * @since [https://github.com/ZuYun]
+ * <p><a href="https://github.com/ZuYun">github</a>
  */
 
 public abstract class BaseAwesCard {
