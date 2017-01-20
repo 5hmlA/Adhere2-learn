@@ -6,14 +6,15 @@ def gen_path(path) {
 }
 
 
-def supportLibVersion = "23.4.0"
+def supportLibVersion = "25.1.0"
+def gradleversion = "2.2.2"
 ext {
 
     config = [
-            buildToolsVersion: "23.0.1",
-            compileSdkVersion: 23,
+            buildToolsVersion: "25.0.2",
+            compileSdkVersion: 24,
             minSdkVersion    : 21,
-            targetSdkVersion : 23,
+            targetSdkVersion : 24,
             versionCode      : 1,
             versionName      : "0.0.1",
     ]
@@ -47,7 +48,6 @@ ext {
             okhttp3       : "com.squareup.okhttp3:okhttp:${libsVersion.okhttp3}",
             gson          : "com.google.code.gson:gson:${libsVersion.gson}",
             butterknife   : "com.jakewharton:butterknife:${libsVersion.butterknife}",
-
             picasso       : "com.squareup.picasso:picasso:${libsVersion.picasso}",
 //            compile 'jp.wasabeef:picasso-transformations:2.1.0'
 //            // If you want to use the GPU Filters

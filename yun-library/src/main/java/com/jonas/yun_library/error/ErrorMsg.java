@@ -8,6 +8,7 @@ package com.jonas.yun_library.error;
  * <p><a href="https://github.com/ZuYun">github</a>
  */
 public class ErrorMsg {
+    public static final String DEFAULTSTR = "--";
     public static interface ErrorCode {
         int HTTP404 = -404;
         int CONNECT404 = 404;

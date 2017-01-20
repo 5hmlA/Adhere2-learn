@@ -74,6 +74,8 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
     private int mTabMode = MODE_TOP;
     private static final String TAG = JPagerSlidingTabStrip.class.getSimpleName();
     private int mLastCheckedPosition = -1;
+    private int mState = -1;
+    private boolean mDragRight;
 
     @IntDef({MODE_TOP, MODE_BUTTOM})
     public @interface TabMode {}
@@ -257,9 +259,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
             return;
         }
         CheckedTextView tab = new CheckedTextView(getContext());
-//        RadioButton tab = new RadioButton(getContext());//radiogroup 会保证RadioButton只有一个checked为true
         tab.setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
-//        tab.setButtonDrawable(android.R.color.transparent);
         tab.setGravity(Gravity.CENTER);
         if(!mDrawAll) {
             if(mTabMode == MODE_TOP) {
@@ -393,10 +393,34 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
             View nextTab = tabsContainer.getChildAt(currentPosition+1);
             final float nextTabLeft = nextTab.getLeft();
             final float nextTabRight = nextTab.getRight();
-
-            lineLeft = ( currentPositionOffset*nextTabLeft+( 1f-currentPositionOffset )*lineLeft );
-            lineRight = ( currentPositionOffset*nextTabRight+( 1f-currentPositionOffset )*lineRight );
+            if (mState == ViewPager.SCROLL_STATE_DRAGGING || mState == ViewPager.SCROLL_STATE_IDLE) {
+                if (mLastCheckedPosition == currentPosition) {
+                    mDragRight = true;
+                    Log.d(TAG, "往右 ------>> ");
+                } else {
+                    mDragRight = false;
+                    Log.d(TAG, "往左 <<------");
+                }
+            }
+//            lineLeft = ( currentPositionOffset*nextTabLeft+( 1f-currentPositionOffset )*lineLeft );
+//            lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
+            if (mDragRight) {
+//                ------>>
+                if (currentPositionOffset >= 0.5) {
+                    lineLeft = (2 * (nextTabLeft - lineLeft) * currentPositionOffset + 2 * lineLeft - nextTabLeft);
+                }
+                lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
+            } else {
+//                <<------
+                lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
+                if (currentPositionOffset <= 0.5) {
+                    lineRight = (2 * (nextTabRight - lineRight) * currentPositionOffset + lineRight);
+                } else {
+                    lineRight = nextTabRight;
+                }
+            }
         }
+
         //画边框
         rectPaint.setStyle(Style.STROKE);
         rectPaint.setStrokeWidth(dp2dip(1));
@@ -438,6 +462,7 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
         @Override
         public void onPageScrollStateChanged(int state){
+ 		    mState = state;
             if(state == ViewPager.SCROLL_STATE_IDLE) {
                 scrollToChild(pager.getCurrentItem(), 0);
             }
