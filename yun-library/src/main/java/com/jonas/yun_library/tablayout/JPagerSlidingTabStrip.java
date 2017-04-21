@@ -1,18 +1,12 @@
 package com.jonas.yun_library.tablayout;
 
 import android.content.Context;
-import android.content.res.ColorStateList;
-import android.content.res.Resources;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Paint.Style;
-import android.graphics.Path;
-import android.graphics.RectF;
-import android.graphics.Typeface;
 import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.support.annotation.Size;
@@ -22,18 +16,16 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Checkable;
 import android.widget.CheckedTextView;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.TextView;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -54,6 +46,7 @@ import java.util.Locale;
  * //代码里面 设置字体颜色状态选择器 selector(ColorStateList)
  * setTextColor(ContextCompat.getColorStateList(getContext(), R.color.textview_selector));
  */
+
 /**
  * @author yun.
  * @date 2016/12/21
@@ -63,157 +56,79 @@ import java.util.Locale;
  */
 public class JPagerSlidingTabStrip extends HorizontalScrollView {
 
-    private float mW;
-    private float mH;
-    private Path mClipath;
-    private boolean mDrawAll = true;
-    private ColorStateList mTabTextColorStateList;
-    private float mOutRadio;
     public static final int MODE_TOP = 0;
     public static final int MODE_BUTTOM = 1;
-    private int mTabMode = MODE_TOP;
     private static final String TAG = JPagerSlidingTabStrip.class.getSimpleName();
+    private JTabStyleDelegate mTabStyleDelegate;
+    private int scrollOffset;
+    private JTabStyle mJTabStyle;
     private int mLastCheckedPosition = -1;
-    private int mState = -1;
-    private boolean mDragRight;
 
-    @IntDef({MODE_TOP, MODE_BUTTOM})
-    public @interface TabMode {}
+    @IntDef({ MODE_TOP, MODE_BUTTOM }) public @interface TabMode {}
 
     public interface IconTabProvider {
         /**
          * 如果 返回 null 則調用getPageIconResId
          *
-         * @param position
-         *         1,简单的背景图片
-         *         2，0为checked pressed背景  1为normal背景
+         * @param position 1,简单的背景图片
+         * 2，0为checked pressed背景  1为normal背景
          */
         public int[] getPageIconResIds(int position);
 
         /**
          * 兩個都實現的話 默認使用getPageIconResIds
-         *
-         * @param position
-         * @return
          */
-        public int getPageIconResId(int position);
+        @DrawableRes public int getPageIconResId(int position);
     }
 
-    private RadioGroup.LayoutParams defaultTabLayoutParams;
-    private RadioGroup.LayoutParams expandedTabLayoutParams;
+    private ViewGroup.LayoutParams defaultTabLayoutParams;
+    private LinearLayout.LayoutParams expandedTabLayoutParams;
 
     private final PageListener pageListener = new PageListener();
     public OnPageChangeListener delegatePageListener;
 
-    private RadioGroup tabsContainer;
+    private LinearLayout tabsContainer;
     private ViewPager pager;
-
-    private int mTabCount;
-
-    private int currentPosition = 0;
-    private float currentPositionOffset = 0f;
-
-    private Paint rectPaint;
-    private Paint dividerPaint;
-
-    private int indicatorColor = 0xFF666666;
-    private int underlineColor = 0x1A000000;
-    private int dividerColor = 0x1A000000;
-
-    private boolean shouldExpand = false;
-    private boolean textAllCaps = true;
-
-    private int scrollOffset = 52;
-    private int indicatorHeight = 8;
-    private int underlineHeight = 2;
-    private int dividerPadding = 12;
-    private int tabPadding = 24;
-    private int dividerWidth = 1;
-
-    private int tabTextSize = 11;
-    private int tabTextColor = 0xFF666666;
-    private Typeface tabTypeface = null;
-    private int tabTypefaceStyle = Typeface.NORMAL;
-
-    private int lastScrollX = 0;
-
     private Locale locale;
+    private int mTabCount;
+    private int lastScrollX = 0;
+    private float currentPositionOffset = 0f;
     private List<TextPaint> mTextPaints = new ArrayList<>();
 
-    public JPagerSlidingTabStrip(Context context){
+
+    public JPagerSlidingTabStrip(Context context) {
         this(context, null);
     }
 
-    public JPagerSlidingTabStrip(Context context, AttributeSet attrs){
+
+    public JPagerSlidingTabStrip(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public JPagerSlidingTabStrip(Context context, AttributeSet attrs, int defStyle){
+
+    public JPagerSlidingTabStrip(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
         setFillViewport(true);
         setWillNotDraw(false);
-
-        tabsContainer = new RadioGroup(context);
+        tabsContainer = new LinearLayout(context);
+        tabsContainer.setGravity(Gravity.CENTER_VERTICAL);
         tabsContainer.setOrientation(LinearLayout.HORIZONTAL);
-        tabsContainer.setLayoutParams(new RadioGroup.LayoutParams(-1, -1));
+        tabsContainer.setLayoutParams(new LinearLayout.LayoutParams(-1, -1));
         addView(tabsContainer);
-
-        DisplayMetrics dm = getResources().getDisplayMetrics();
-        scrollOffset = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, scrollOffset, dm);
-        indicatorHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, indicatorHeight, dm);
-        underlineHeight = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, underlineHeight, dm);
-        dividerPadding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dividerPadding, dm);
-        tabPadding = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, tabPadding, dm);
-        dividerWidth = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dividerWidth, dm);
-        tabTextSize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, tabTextSize, dm);
-
-        // get system attrs (android:textSize and android:textColor)
-
-        //		TypedArray a = context.obtainStyledAttributes(attrs, ATTRS);
-        //
-        //		tabTextSize = a.getDimensionPixelSize(0, tabTextSize);
-        //		tabTextColor = a.getColor(1, tabTextColor);
-        //
-        //		a.recycle();
-        //
-        //		// get custom attrs
-        //
-        //		a = context.obtainStyledAttributes(attrs, R.styleable.PagerSlidingTabStrip);
-        //
-        //		indicatorColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsIndicatorColor, indicatorColor);
-        //		underlineColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsUnderlineColor, underlineColor);
-        //		dividerColor = a.getColor(R.styleable.PagerSlidingTabStrip_pstsDividerColor, dividerColor);
-        //		indicatorHeight = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsIndicatorHeight, indicatorHeight);
-        //		underlineHeight = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsUnderlineHeight, underlineHeight);
-        //		dividerPadding = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsDividerPadding, dividerPadding);
-        //		tabPadding = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsTabPaddingLeftRight, tabPadding);
-        //		tabBackgroundResId = a.getResourceId(R.styleable.PagerSlidingTabStrip_pstsTabBackground, tabBackgroundResId);
-        //		shouldExpand = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsShouldExpand, shouldExpand);
-        //		scrollOffset = a.getDimensionPixelSize(R.styleable.PagerSlidingTabStrip_pstsScrollOffset, scrollOffset);
-        //		textAllCaps = a.getBoolean(R.styleable.PagerSlidingTabStrip_pstsTextAllCaps, textAllCaps);
-        //
-        //		a.recycle();
-
-        rectPaint = new Paint();
-        rectPaint.setAntiAlias(true);
-        rectPaint.setStyle(Style.FILL);
-
-        dividerPaint = new Paint();
-        dividerPaint.setAntiAlias(true);
-        dividerPaint.setStrokeWidth(dividerWidth);
-
-        defaultTabLayoutParams = new RadioGroup.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-        expandedTabLayoutParams = new RadioGroup.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
-
-        if(locale == null) {
+        defaultTabLayoutParams = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.MATCH_PARENT);
+        expandedTabLayoutParams = new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1.0f);
+        if (locale == null) {
             locale = getResources().getConfiguration().locale;
         }
+        mTabStyleDelegate = new JTabStyleDelegate().obtainAttrs(this, attrs, defStyle);
+        mJTabStyle = mTabStyleDelegate.getJTabStyle();
     }
 
-    public void setViewPager(ViewPager pager){
+    public void setViewPager(ViewPager pager) {
         this.pager = pager;
-        if(pager.getAdapter() == null) {
+        if (pager.getAdapter() == null) {
             throw new IllegalStateException("ViewPager does not have adapter instance.");
         }
 
@@ -222,477 +137,277 @@ public class JPagerSlidingTabStrip extends HorizontalScrollView {
         notifyDataSetChanged();
     }
 
-    public void setOnPageChangeListener(OnPageChangeListener listener){
+
+    public void setOnPageChangeListener(OnPageChangeListener listener) {
         this.delegatePageListener = listener;
     }
 
-    public void notifyDataSetChanged(){
+
+    public void notifyDataSetChanged() {
 
         tabsContainer.removeAllViews();
         mTabCount = pager.getAdapter().getCount();
-        for(int i = 0; i<mTabCount; i++) {
+        for (int i = 0; i < mTabCount; i++) {
 
-            if(pager.getAdapter() instanceof IconTabProvider) {
-                if(( (IconTabProvider)pager.getAdapter() ).getPageIconResIds(i) != null) {
+            if (pager.getAdapter() instanceof IconTabProvider) {
+                if (((IconTabProvider) pager.getAdapter()).getPageIconResIds(i) != null) {
                     addIconTab(i, pager.getAdapter().getPageTitle(i).toString(),
-                            ( (IconTabProvider)pager.getAdapter() ).getPageIconResIds(i));
-                }else {
-                    addIconTab(i, pager.getAdapter().getPageTitle(i).toString(),
-                            ( (IconTabProvider)pager.getAdapter() ).getPageIconResId(i));
+                            ((IconTabProvider) pager.getAdapter()).getPageIconResIds(i));
                 }
-            }else {
+                else {
+                    addIconTab(i, pager.getAdapter().getPageTitle(i).toString(),
+                            ((IconTabProvider) pager.getAdapter()).getPageIconResId(i));
+                }
+            }
+            else {
                 addTextTab(i, pager.getAdapter().getPageTitle(i).toString());
             }
         }
         updateTabStyles();
-        currentPosition = pager.getCurrentItem();
-        check(currentPosition);
+        check(mTabStyleDelegate.setCurrentPosition(pager.getCurrentItem()));
     }
 
-    private void addTextTab(final int position, String title){
+
+    private void addTextTab(final int position, String title) {
         addIconTab(position, title, 0);
     }
 
-    private void addIconTab(final int position, String title, @NonNull @Size(min = 1) int... resId){
-        if(TextUtils.isEmpty(title)) {
+
+    private void addIconTab(final int position, String title, @NonNull @Size(min = 1) int... resId) {
+        if (TextUtils.isEmpty(title)) {
             Log.e(TAG, "title is null ");
             return;
         }
         CheckedTextView tab = new CheckedTextView(getContext());
         tab.setTextAlignment(TEXT_ALIGNMENT_GRAVITY);
         tab.setGravity(Gravity.CENTER);
-        if(!mDrawAll) {
-            if(mTabMode == MODE_TOP) {
-                if(resId.length>1) {
+        if (!mTabStyleDelegate.isNotDrawIcon()) {
+            if (mTabStyleDelegate.getTabMode() == MODE_TOP) {
+                if (resId.length > 1) {
                     tab.setBackground(getListDrable(resId));
-                }else {
+                }
+                else {
                     tab.setBackgroundResource(resId[0]);
                 }
-            }else {
+            }
+            else {
+                mTabStyleDelegate.setShouldExpand(true);
                 tab.setCompoundDrawablePadding(0);
                 tab.setSingleLine();
-                if(resId.length>1) {
+                if (resId.length > 1) {
                     tab.setCompoundDrawablesWithIntrinsicBounds(null, getListDrable(resId), null, null);
-                }else {
-                    tab.setCompoundDrawablesWithIntrinsicBounds(null, ContextCompat.getDrawable(getContext(), resId[0]),
-                            null, null);
+                }
+                else {
+                    tab.setCompoundDrawablesWithIntrinsicBounds(null,
+                            ContextCompat.getDrawable(getContext(), resId[0]), null, null);
                 }
             }
         }
         tab.setText(title);
         addTab(position, tab);
-        if(currentPosition == 0) {
+        if (mTabStyleDelegate.getCurrentPosition() == 0) {
             pageListener.onPageSelected(0);
         }
     }
 
-    private StateListDrawable getListDrable(@NonNull @Size(min = 2) int... resId){
+
+    private StateListDrawable getListDrable(@NonNull int... resId) {
         StateListDrawable listDrawable = new StateListDrawable();
-        listDrawable
-                .addState(new int[]{android.R.attr.state_checked}, ContextCompat.getDrawable(getContext(), resId[0]));
-        listDrawable
-                .addState(new int[]{android.R.attr.state_pressed}, ContextCompat.getDrawable(getContext(), resId[0]));
-        listDrawable.addState(new int[]{}, ContextCompat.getDrawable(getContext(), resId[1]));
+        listDrawable.addState(new int[] { android.R.attr.state_checked },
+                ContextCompat.getDrawable(getContext(), resId[0]));
+        listDrawable.addState(new int[] { android.R.attr.state_pressed },
+                ContextCompat.getDrawable(getContext(), resId[0]));
+        listDrawable.addState(new int[] {}, ContextCompat.getDrawable(getContext(), resId[1]));
         return listDrawable;
     }
 
-    private void addTab(final int position, View tab){
+
+    private void addTab(final int position, View tab) {
         //        tab.setFocusable(true);
         tab.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v){
+            @Override public void onClick(View v) {
                 pager.setCurrentItem(position);
             }
         });
-        tab.setPadding(tabPadding, 0, tabPadding, 0);
-        tabsContainer.addView(tab, position, shouldExpand ? expandedTabLayoutParams : defaultTabLayoutParams);
+        tab.setPadding(mTabStyleDelegate.getTabPadding(), 0, mTabStyleDelegate.getTabPadding(), 0);
+        tabsContainer.addView(tab, position,
+                mTabStyleDelegate.isShouldExpand() ? expandedTabLayoutParams : defaultTabLayoutParams);
     }
 
-    private void updateTabStyles(){
 
-        for(int i = 0; i<mTabCount; i++) {
+    private void updateTabStyles() {
+
+        for (int i = 0; i < mTabCount; i++) {
 
             View v = tabsContainer.getChildAt(i);
-            if(v instanceof TextView) {
-                TextView tab = (TextView)v;
-                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, tabTextSize);
-                tab.setTypeface(tabTypeface, tabTypefaceStyle);
-                if(mTabTextColorStateList == null) {
-                    tab.setTextColor(tabTextColor);
-                }else {
-                    tab.setTextColor(mTabTextColorStateList);
+            if (v instanceof TextView) {
+                TextView tab = (TextView) v;
+                tab.setGravity(Gravity.CENTER);
+                tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTabStyleDelegate.getTabTextSize());
+                tab.setTypeface(mTabStyleDelegate.getTabTypeface(), mTabStyleDelegate.getTabTypefaceStyle());
+                if (mTabStyleDelegate.getTabTextColorStateList() == null) {
+                    tab.setTextColor(mTabStyleDelegate.getTabTextColor());
+                }
+                else {
+                    tab.setTextColor(mTabStyleDelegate.getTabTextColorStateList());
                 }
                 // setAllCaps() is only available from API 14, so the upper case is made manually if we are on a
                 // pre-ICS-build
-                if(textAllCaps) {
-                    if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                if (mTabStyleDelegate.isTextAllCaps()) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
                         tab.setAllCaps(true);
-                    }else {
+                    }
+                    else {
                         tab.setText(tab.getText().toString().toUpperCase(locale));
                     }
                 }
             }
         }
-
     }
 
-    private void scrollToChild(int position, int offset){
 
-        if(mTabCount == 0) {
+    private void scrollToChild(int position, int offset) {
+
+        if (mTabCount == 0) {
             return;
         }
-        int newScrollX = tabsContainer.getChildAt(position).getLeft()+offset;
+        int newScrollX = tabsContainer.getChildAt(position).getLeft() + offset;
 
-        if(position>0 || offset>0) {
+        if (position > 0 || offset > 0) {
             newScrollX -= scrollOffset;
         }
-        if(newScrollX != lastScrollX) {
+        if (newScrollX != lastScrollX) {
             lastScrollX = newScrollX;
             scrollTo(newScrollX, 0);
         }
     }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh){
-        super.onSizeChanged(w, h, oldw, oldh);
-        float pading = dp2dip(0.5f);
-        mW = w-pading;
-        mH = h-pading;
-        if(mDrawAll) {
-            RectF clip = new RectF(pading, pading, mW, mH);
-            mClipath = new Path();
-            mClipath.addRoundRect(clip, mH/2f, mH/2f, Path.Direction.CCW);
-            mOutRadio = mH/2;
-        }
 
-        if(mTabMode == MODE_BUTTOM) {
-            indicatorHeight = (int)mH;
-        }
+    @Override protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mJTabStyle.onSizeChanged(w, h, oldw, oldh);
     }
 
-    @Override
-    protected void onDraw(Canvas canvas){
+
+    @Override protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         //        if (isInEditMode() || mTabCount == 0 || mTabMode != MODE_TOP) {
-        if(isInEditMode() || mTabCount == 0) {
+        if (isInEditMode() || mTabCount == 0) {
             return;
         }
 
-        // draw indicator line
-        rectPaint.setColor(indicatorColor);
-
-        // default: line below current tab
-        View currentTab = tabsContainer.getChildAt(currentPosition);
-        float lineLeft = currentTab.getLeft();
-        float lineRight = currentTab.getRight();
-
-        // if there is an offset, start interpolating left and right coordinates between current and next tab
-        if(currentPositionOffset>0f && currentPosition<mTabCount-1) {
-
-            View nextTab = tabsContainer.getChildAt(currentPosition+1);
-            final float nextTabLeft = nextTab.getLeft();
-            final float nextTabRight = nextTab.getRight();
-            if (mState == ViewPager.SCROLL_STATE_DRAGGING || mState == ViewPager.SCROLL_STATE_IDLE) {
-                if (mLastCheckedPosition == currentPosition) {
-                    mDragRight = true;
-                    Log.d(TAG, "往右 ------>> ");
-                } else {
-                    mDragRight = false;
-                    Log.d(TAG, "往左 <<------");
-                }
-            }
-//            lineLeft = ( currentPositionOffset*nextTabLeft+( 1f-currentPositionOffset )*lineLeft );
-//            lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
-            if (mDragRight) {
-//                ------>>
-                if (currentPositionOffset >= 0.5) {
-                    lineLeft = (2 * (nextTabLeft - lineLeft) * currentPositionOffset + 2 * lineLeft - nextTabLeft);
-                }
-                lineRight = (currentPositionOffset * nextTabRight + (1f - currentPositionOffset) * lineRight);
-            } else {
-//                <<------
-                lineLeft = (currentPositionOffset * nextTabLeft + (1f - currentPositionOffset) * lineLeft);
-                if (currentPositionOffset <= 0.5) {
-                    lineRight = (2 * (nextTabRight - lineRight) * currentPositionOffset + lineRight);
-                } else {
-                    lineRight = nextTabRight;
-                }
-            }
-        }
-
-        //画边框
-        rectPaint.setStyle(Style.STROKE);
-        rectPaint.setStrokeWidth(dp2dip(1));
-        canvas.drawRoundRect(dp2dip(0.5f), dp2dip(0.5f), mW, this.mH, mOutRadio, mOutRadio, rectPaint);
-        if(mDrawAll) {
-            canvas.save();
-            canvas.clipPath(mClipath);
-        }
-        rectPaint.setStyle(Style.FILL);
-        canvas.drawRect(lineLeft, mH-indicatorHeight, lineRight, mH, rectPaint);
-
-        // draw underline
-        rectPaint.setColor(underlineColor);
-        canvas.drawRect(0, mH-underlineHeight, tabsContainer.getWidth(), mH, rectPaint);
-        //        canvas.restore();
-
-        // draw divider
-        dividerPaint.setColor(dividerColor);
-        for(int i = 0; i<mTabCount-1; i++) {
-            View tab = tabsContainer.getChildAt(i);
-            canvas.drawLine(tab.getRight(), dividerPadding, tab.getRight(), mH-dividerPadding, dividerPaint);
-        }
+        mJTabStyle.onDraw(canvas, tabsContainer, currentPositionOffset, mLastCheckedPosition);
     }
+
 
     private class PageListener implements OnPageChangeListener {
 
-        @Override
-        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels){
+        @Override public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            currentPosition = position;
+            mTabStyleDelegate.setCurrentPosition(position);
             currentPositionOffset = positionOffset;
-            scrollToChild(position, (int)( positionOffset*tabsContainer.getChildAt(position).getWidth() ));
+            scrollToChild(position, (int) (positionOffset * tabsContainer.getChildAt(position).getWidth()));
             invalidate();
 
-            if(delegatePageListener != null) {
+            if (delegatePageListener != null) {
                 delegatePageListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
             }
         }
 
-        @Override
-        public void onPageScrollStateChanged(int state){
- 		    mState = state;
-            if(state == ViewPager.SCROLL_STATE_IDLE) {
+
+        @Override public void onPageScrollStateChanged(int state) {
+            mTabStyleDelegate.setState(state);
+            if (state == ViewPager.SCROLL_STATE_IDLE) {
                 scrollToChild(pager.getCurrentItem(), 0);
             }
 
-            if(delegatePageListener != null) {
+            if (delegatePageListener != null) {
                 delegatePageListener.onPageScrollStateChanged(state);
             }
         }
 
-        @Override
-        public void onPageSelected(int position){
+
+        @Override public void onPageSelected(int position) {
             check(position);
-            if(delegatePageListener != null) {
+            if (delegatePageListener != null) {
                 delegatePageListener.onPageSelected(position);
             }
         }
-
     }
 
-    private void check(int position){
-        if(mLastCheckedPosition!=-1)
-            ( (Checkable)tabsContainer.getChildAt(mLastCheckedPosition) ).setChecked(false);
+
+    //单选
+    private void check(int position) {
+        if (mLastCheckedPosition != -1) {
+            ((Checkable) tabsContainer.getChildAt(mLastCheckedPosition)).setChecked(false);
+        }
         mLastCheckedPosition = position;
-        ( (Checkable)tabsContainer.getChildAt(position) ).setChecked(true);
+        ((Checkable) tabsContainer.getChildAt(position)).setChecked(true);
     }
 
-    public void setIndicatorColor(int indicatorColor){
-        this.indicatorColor = indicatorColor;
-        invalidate();
-    }
 
-    public void setIndicatorColorResource(int resId){
-        this.indicatorColor = ContextCompat.getColor(getContext(),resId);
-        invalidate();
-    }
-
-    public int getIndicatorColor(){
-        return this.indicatorColor;
-    }
-
-    public void setIndicatorHeight(int indicatorLineHeightPx){
-        this.indicatorHeight = indicatorLineHeightPx;
-        invalidate();
-    }
-
-    public int getIndicatorHeight(){
-        return indicatorHeight;
-    }
-
-    public void setUnderlineColor(int underlineColor){
-        this.underlineColor = underlineColor;
-        invalidate();
-    }
-
-    public void setUnderlineColorResource(int resId){
-        this.underlineColor = getResources().getColor(resId);
-        invalidate();
-    }
-
-    public int getUnderlineColor(){
-        return underlineColor;
-    }
-
-    public void setDividerColor(int dividerColor){
-        this.dividerColor = dividerColor;
-        invalidate();
-    }
-
-    public void setDividerColorResource(int resId){
-        this.dividerColor = getResources().getColor(resId);
-        invalidate();
-    }
-
-    public int getDividerColor(){
-        return dividerColor;
-    }
-
-    public void setUnderlineHeight(int underlineHeightPx){
-        this.underlineHeight = underlineHeightPx;
-        invalidate();
-    }
-
-    public int getUnderlineHeight(){
-        return underlineHeight;
-    }
-
-    public void setDividerPadding(int dividerPaddingPx){
-        this.dividerPadding = dividerPaddingPx;
-        invalidate();
-    }
-
-    public int getDividerPadding(){
-        return dividerPadding;
-    }
-
-    public void setScrollOffset(int scrollOffsetPx){
-        this.scrollOffset = scrollOffsetPx;
-        invalidate();
-    }
-
-    public int getScrollOffset(){
-        return scrollOffset;
-    }
-
-    public void setShouldExpand(boolean shouldExpand){
-        this.shouldExpand = shouldExpand;
-        requestLayout();
-    }
-
-    public boolean getShouldExpand(){
-        return shouldExpand;
-    }
-
-    public boolean isTextAllCaps(){
-        return textAllCaps;
-    }
-
-    public void setAllCaps(boolean textAllCaps){
-        this.textAllCaps = textAllCaps;
-    }
-
-    public void setTextSize(int textSizePx){
-        this.tabTextSize = textSizePx;
-        updateTabStyles();
-    }
-
-    public int getTextSize(){
-        return tabTextSize;
-    }
-
-    public void setTextColor(int textColor){
-        this.tabTextColor = textColor;
-        updateTabStyles();
-    }
-
-    public void setTextColorResource(int resId){
-        this.tabTextColor = getResources().getColor(resId);
-        updateTabStyles();
-    }
-
-    public void setTextColorStateResource(int resId){
-        mTabTextColorStateList = ContextCompat.getColorStateList(getContext(), resId);
-        updateTabStyles();
-    }
-
-    public int getTextColor(){
-        return tabTextColor;
-    }
-
-    public void setTypeface(Typeface typeface, int style){
-        this.tabTypeface = typeface;
-        this.tabTypefaceStyle = style;
-        updateTabStyles();
-    }
-
-    public void setTabPaddingLeftRight(int paddingPx){
-        this.tabPadding = paddingPx;
-        updateTabStyles();
-    }
-
-    public int getTabPaddingLeftRight(){
-        return tabPadding;
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state){
-        SavedState savedState = (SavedState)state;
+    @Override public void onRestoreInstanceState(Parcelable state) {
+        SavedState savedState = (SavedState) state;
         super.onRestoreInstanceState(savedState.getSuperState());
-        currentPosition = savedState.currentPosition;
+        mTabStyleDelegate.setCurrentPosition(savedState.currentPosition);
         requestLayout();
     }
 
-    @Override
-    public Parcelable onSaveInstanceState(){
+
+    @Override public Parcelable onSaveInstanceState() {
         Parcelable superState = super.onSaveInstanceState();
         SavedState savedState = new SavedState(superState);
-        savedState.currentPosition = currentPosition;
+        savedState.currentPosition = mTabStyleDelegate.getCurrentPosition();
         return savedState;
     }
 
-    public void setDrawAll(boolean drawAll){
-        mDrawAll = drawAll;
-    }
 
     static class SavedState extends BaseSavedState {
         int currentPosition;
 
-        public SavedState(Parcelable superState){
+
+        public SavedState(Parcelable superState) {
             super(superState);
         }
 
-        private SavedState(Parcel in){
+
+        private SavedState(Parcel in) {
             super(in);
             currentPosition = in.readInt();
         }
 
-        @Override
-        public void writeToParcel(Parcel dest, int flags){
+
+        @Override public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeInt(currentPosition);
         }
 
+
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
-            @Override
-            public SavedState createFromParcel(Parcel in){
+            @Override public SavedState createFromParcel(Parcel in) {
                 return new SavedState(in);
             }
 
-            @Override
-            public SavedState[] newArray(int size){
+
+            @Override public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
     }
 
-    public int getTabMode(){
-        return mTabMode;
-    }
 
-    public void setTabMode(@TabMode int tabMode){
-        mTabMode = tabMode;
-        if(mTabMode == MODE_BUTTOM) {
-            setPadding(0, 8, 0, 8);
-        }
+    public JTabStyleDelegate getTabStyleDelegate() {
+        return mTabStyleDelegate;
     }
 
 
-    private float dp2dip(float dp){
-        DisplayMetrics dm = Resources.getSystem().getDisplayMetrics();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, dm);
+    public void setJTabStyle(JTabStyle JTabStyle) {
+        mJTabStyle = JTabStyle;
     }
 
+
+    public ViewGroup getTabsContainer() {
+        return tabsContainer;
+    }
 }

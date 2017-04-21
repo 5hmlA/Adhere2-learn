@@ -1,31 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     android:fitsSystemWindows="true"
     tools:context="com.jonas.materialdesign_learn.RecycleViewActivity">
 
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay"/>
+
+    </android.support.design.widget.AppBarLayout>
+
     <com.jonas.yun_library.tablayout.JPagerSlidingTabStrip
         android:id="@+id/jsts"
+        android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="28dp">
 
     </com.jonas.yun_library.tablayout.JPagerSlidingTabStrip>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/md_vp"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/md_vp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <com.jonas.yun_library.tablayout.JPagerSlidingTabStrip
+            android:id="@+id/jst_dots"
+            android:layout_margin="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+    </FrameLayout>
+
     <com.jonas.yun_library.tablayout.JPagerSlidingTabStrip
         android:id="@+id/jstsb"
         android:layout_width="match_parent"
-        android:background="#fcfc"
         android:layout_height="wrap_content"/>
 
 </LinearLayout>

@@ -8,7 +8,8 @@ import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.jonas.yun_library.utils.TimeHelper;
+import com.jonas.yun_library.helper.TimeHelper;
+
 
 public class MainActivity extends ListActivity {
 

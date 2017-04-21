@@ -95,7 +95,7 @@
     <string name="jonas_recyc_load_retry">点击重试</string>
     <string name="title_activity_recycle_view">RecycleViewActivity</string>
     <string name="title_activity_coordinator_layout">CoordinatorLayoutActivity</string>
-    <string name="all">ALL</string>
+    <string name="all">all</string>
     <string name="shared">SHARE</string>
     <string name="favorites">FAVORIT</string>
 </resources>

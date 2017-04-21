@@ -1,2 +1,3 @@
-include ':app', ':customview-learn', ':resource-learn', ':material-learn'
+include ':app' , ':resource-learn', ':material-learn'
+include ':customview-learn'
 include ':yun-library', ':jgraph'

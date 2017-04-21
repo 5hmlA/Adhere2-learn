@@ -16,7 +16,7 @@ import android.view.View;
 import com.jonas.yun_library.adapter.AwesomeRecvAdapter;
 import com.jonas.yun_library.adapter.DragSwipeCallback;
 import com.jonas.yun_library.adapter.RecyclerHolder;
-import com.jonas.yun_library.utils.SnackbarUtil;
+import com.jonas.yun_library.helper.SnackbarUtil;
 
 import java.util.ArrayList;
 
