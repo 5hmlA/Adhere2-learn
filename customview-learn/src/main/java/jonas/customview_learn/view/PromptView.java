@@ -102,8 +102,13 @@ public class PromptView extends android.support.v7.widget.AppCompatCheckedTextVi
         float halfMsgBgW = msgWidth / 2 + promptOffset;
         halfMsgBgW = halfMsgBgW > mNumHeight ? halfMsgBgW : mNumHeight;
 
-        //textWidth的宽度不小于3个字的宽度
-        textWidth = getText().length() < 3 ? textWidth / getText().length() * 3 : textWidth;
+        if (!TextUtils.isEmpty(getText())) {
+            //textWidth的宽度不小于3个字的宽度
+            textWidth = getText().length() < 3 ? textWidth / getText().length() * 3 : textWidth;
+        }
+        else {
+            textWidth = (int) (mHalfW * 2);
+        }
         Drawable[] compoundDrawables = getCompoundDrawables();
         if (!haveCompoundDrawable(compoundDrawables)) {
             promptOffset = promptOffset / 2;
