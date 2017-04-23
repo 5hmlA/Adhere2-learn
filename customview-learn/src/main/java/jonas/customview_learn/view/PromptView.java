@@ -68,6 +68,7 @@ public class PromptView extends android.support.v7.widget.AppCompatCheckedTextVi
         mNumPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mNumPaint.setTextAlign(Paint.Align.CENTER);
         mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        setIncludeFontPadding(false);//去除顶部和底部额外空白
     }
 
 
@@ -77,8 +78,14 @@ public class PromptView extends android.support.v7.widget.AppCompatCheckedTextVi
         mNumPaint.setTextSize(dp2px(num_size));
         mNumHeight = getFontHeight(mNumPaint);
         refreshNotifyBg();
-
-        setPadding(0, (int) (mNumHeight), 0, (int) (mNumHeight));
+        Drawable[] compoundDrawables = getCompoundDrawables();
+        if (haveCompoundDrawable(compoundDrawables)) {
+            setPadding(getPaddingLeft(), (int) (mNumHeight/2), getPaddingRight(), (int) (mNumHeight/2));
+        }
+        else {
+            setPadding(getPaddingLeft(), (int) (mNumHeight*3/4), getPaddingRight(), (int) (mNumHeight*3/4));
+        }
+        //setPadding(0, (int) (mNumHeight), 0, (int) (mNumHeight));
 
         mBgPaint.setColor(color_bg);
         mNumPaint.setColor(color_num);
@@ -111,7 +118,7 @@ public class PromptView extends android.support.v7.widget.AppCompatCheckedTextVi
         }
         Drawable[] compoundDrawables = getCompoundDrawables();
         if (!haveCompoundDrawable(compoundDrawables)) {
-            promptOffset = promptOffset / 2;
+            promptOffset = -promptOffset / 3;
         }
         mPromptCenterPoint = new PointF(mHalfW + textWidth / 2 - promptOffset, mNumHeight);
         mMsgBg = new RectF(mPromptCenterPoint.x - halfMsgBgW, 0, mPromptCenterPoint.x + halfMsgBgW,

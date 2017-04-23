@@ -35,6 +35,11 @@
         android:layout_width="100dp"
         android:textSize="32sp"
         android:layout_height="wrap_content"/>
+ <jonas.customview_learn.view.PromptView
+        android:text="消息"
+        android:background="#f0ff"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"/>
 
     <jonas.customview_learn.view.PromptView
         android:text="消息"
