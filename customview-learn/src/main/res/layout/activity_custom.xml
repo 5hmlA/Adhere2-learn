@@ -29,4 +29,17 @@
         android:layout_margin="50dp"
         android:layout_height="150dp"/>
 
+    <jonas.customview_learn.view.PromptView
+        android:text="消息"
+        android:background="#f0ff"
+        android:layout_width="100dp"
+        android:textSize="32sp"
+        android:layout_height="wrap_content"/>
+
+    <jonas.customview_learn.view.PromptView
+        android:text="消息"
+        android:background="#f0ff"
+        android:layout_width="100dp"
+        android:drawableTop="@mipmap/ic_tab_msg_h"
+        android:layout_height="wrap_content"/>
 </LinearLayout>
